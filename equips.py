@@ -18,7 +18,7 @@ def mostrarEquip():
     idEquip = input("Posa la ID del equip que vols veure: ")
 
     sentenciaSQL = f"""SELECT * FROM equipos
-    WHERE nombre = '{idEquip}';
+    WHERE idEquipo = '{idEquip}';
     """
     cur = conn.cursor()
     cur.execute(sentenciaSQL)
@@ -118,7 +118,7 @@ def llistarEquips():
         print(f"Error conectando a la base de datos: {e}")
         sys.exit(1)
 
-    sentenciaSQL = f"""SELECT * FROM equipos;
+    sentenciaSQL = f"""SELECT idEquipo,nombre FROM equipos;
     """
     cur = conn.cursor()
     cur.execute(sentenciaSQL)
@@ -165,7 +165,7 @@ def treballarEquips():
         resposta = int(input("Introdueix una opció: "))
 
         if resposta == 6:
-            print("Menu Principal:\n")
+            print("\nMenu Principal:")
             break
 
         if resposta == 1:

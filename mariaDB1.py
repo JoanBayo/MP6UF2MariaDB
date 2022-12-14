@@ -12,11 +12,12 @@ while True:
         break
 
     if resposta == 1:
+        print("\nBenvingut al menu de Equips")
+
         treballarEquips()
-        print("Benvingut al menu de Equips")
 
     if resposta == 2:
+        print("\nBenvingut al menu de Jugadors")
         treballarJugadors()
-        print("Benvingut al menu de Jugadors")
 
 

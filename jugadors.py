@@ -17,8 +17,8 @@ def mostrarJugador():
 
     idJugador = input("Posa la ID del jugador que vols veure: ")
 
-    sentenciaSQL = f"""SELECT idJugador, nombre FROM jugadores
-    WHERE nombre = '{idJugador}';
+    sentenciaSQL = f"""SELECT * FROM jugadores
+    WHERE idjugador = '{idJugador}';
     """
     cur = conn.cursor()
     cur.execute(sentenciaSQL)
@@ -169,6 +169,26 @@ def eliminarJugador():
 
 
 def llistarJugadors():
+    try:
+        conn = mariadb.connect(
+            user="pythonMaster",
+            password="Admin1234",
+            host="localhost",
+            port=3306,
+            database="proves"
+        )
+    except mariadb.Error as e:
+        print(f"Error conectando a la base de datos: {e}")
+        sys.exit(1)
+
+    sentenciaSQL = f"""SELECT idJugador,nombre,posicion FROM jugadores
+    """
+    cur = conn.cursor()
+    cur.execute(sentenciaSQL)
+    resultado = cur.fetchall()
+    conn.close()
+    for i in resultado:
+        print(i)
 
 
 def treballarJugadors():
@@ -185,8 +205,8 @@ def treballarJugadors():
         sys.exit(1)
 
     sentenciaSQL = """CREATE TABLE IF NOT EXISTS jugadores ( idJugador INT NOT NULL AUTO_INCREMENT, nombre VARCHAR(
-    60) NOT NULL, posicion ENUM('portero','defensa central','lateral izquierdo','lateral derecho','pivote',
-    'mediocentro','extremo izquierdo','extremo derecho','delantero centro') NOT NULL, nacimiento DATE NOT NULL, 
+    60) NOT NULL, posicion ENUM('Portero','Defensa central','Lateral izquierdo','Lateral derecho','Pivote',
+    'Mediocentro','Extremo izquierdo','Extremo derecho','Delantero centro') NOT NULL, nacimiento DATE NOT NULL, 
     numero int NOT NULL, altura int NOT NULL, valorMercado int NOT NULL, equipos_id int NOT NULL, PRIMARY KEY (
     idJugador), FOREIGN KEY (equipos_id) REFERENCES equipos (idEquipo) ); """
     cur = conn.cursor()
@@ -198,12 +218,12 @@ def treballarJugadors():
         print("2- Introduir un nou jugador ")
         print("3- Modificar un jugador ")
         print("4- Eliminar un jugador")
-        print("5- Llistar tots els jugador (ID, NOM)")
+        print("5- Llistar tots els jugador (ID, NOM, POSCICIO)")
         print("6- Sortir")
         resposta = int(input("Introdueix una opció: "))
 
         if resposta == 6:
-            print("Menu Principal:\n")
+            print("\nMenu Principal: ")
             break
 
         if resposta == 1:
