@@ -15,10 +15,10 @@ def mostrarEquip():
         print(f"Error conectando a la base de datos: {e}")
         sys.exit(1)
 
-    idEquip = input("Posa la ID del equip que vols veure: ")
+    idequipo = input("Posa la ID de un equip per veure tots els jugadors que hi pertanyen: ")
 
-    sentenciaSQL = f"""SELECT * FROM equipos
-    WHERE idEquipo = '{idEquip}';
+    sentenciaSQL = f"""SELECT nombre,posicion FROM jugadores
+    WHERE equipos_id = '{idequipo}';
     """
     cur = conn.cursor()
     cur.execute(sentenciaSQL)
@@ -27,6 +27,7 @@ def mostrarEquip():
     for i in resultado:
         print(i)
 
+    print()
 def introduirEquip():
     try:
         conn = mariadb.connect(
@@ -127,6 +128,8 @@ def llistarEquips():
     for i in resultado:
         print(i)
 
+    print()
+
 def treballarEquips():
     try:
         conn = mariadb.connect(
@@ -156,7 +159,7 @@ def treballarEquips():
     conn.close()
 
     while True:
-        print("1- Mostrar una equip mitjançant el seu ID")
+        print("1- Mostrar TOTS els jugadors de un equip posan la ID del equip")
         print("2- Introduir un nou equip ")
         print("3- Modificar un equip ")
         print("4- Eliminar un equip")

@@ -15,10 +15,10 @@ def mostrarJugador():
         print(f"Error conectando a la base de datos: {e}")
         sys.exit(1)
 
-    idJugador = input("Posa la ID del jugador que vols veure: ")
+    idjugador = input("Posa la ID del de jugador que vols veure: ")
 
     sentenciaSQL = f"""SELECT * FROM jugadores
-    WHERE idjugador = '{idJugador}';
+    WHERE idjugador = '{idjugador}';
     """
     cur = conn.cursor()
     cur.execute(sentenciaSQL)
@@ -166,6 +166,7 @@ def eliminarJugador():
     cur.execute(sentenciaSQL)
     conn.commit()
     conn.close()
+    print()
 
 
 def llistarJugadors():
@@ -190,7 +191,7 @@ def llistarJugadors():
     for i in resultado:
         print(i)
 
-
+    print()
 def treballarJugadors():
     try:
         conn = mariadb.connect(
@@ -206,7 +207,7 @@ def treballarJugadors():
 
     sentenciaSQL = """CREATE TABLE IF NOT EXISTS jugadores ( idJugador INT NOT NULL AUTO_INCREMENT, nombre VARCHAR(
     60) NOT NULL, posicion ENUM('Portero','Defensa central','Lateral izquierdo','Lateral derecho','Pivote',
-    'Mediocentro','Extremo izquierdo','Extremo derecho','Delantero centro') NOT NULL, nacimiento DATE NOT NULL, 
+    'Mediocentro','Extremo izquierdo','Extremo derecho','Delantero centro','Mediocentro ofensivo') NOT NULL, nacimiento DATE NOT NULL, 
     numero int NOT NULL, altura int NOT NULL, valorMercado int NOT NULL, equipos_id int NOT NULL, PRIMARY KEY (
     idJugador), FOREIGN KEY (equipos_id) REFERENCES equipos (idEquipo) ); """
     cur = conn.cursor()

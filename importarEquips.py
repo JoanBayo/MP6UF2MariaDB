@@ -20,8 +20,8 @@ class jugadors:
         pass
 
 
-def descarregaWeb():
-    url = 'https://www.transfermarkt.es/cd-teruel/kader/verein/19301/saison_id/2022/plus/1'
+def descarregaWeb(urlEquipo):
+    url = urlEquipo
     user_agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'
     headers = {'User-Agent': user_agent}
 
@@ -34,7 +34,25 @@ def descarregaWeb():
     fitxer.close()
 
 
-def carregarXML():
+def llegirFitxer():
+    fitxer = open("jugadors.html", "rt", encoding="utf-8")
+    html = fitxer.read()
+    fitxer.close()
+
+    inici = html.find('<table class="items">')
+    final = html.find('<div class="keys"')
+    taula = html[inici:final]
+
+    taula = taula.replace('class=rn_nummer', 'class="rn_nummer"')
+    taula = taula.replace('&nbsp;', '')
+
+    fitxer = open("taula.xml", "wt", encoding="utf-8")
+    fitxer.write(taula)
+    fitxer.close()
+
+
+
+def carregarXML(idEquipo):
     tree = ET.parse("taula.xml")
     root = tree.getroot()
     llistajugadors = []
@@ -66,8 +84,7 @@ def carregarXML():
                         llistajugadors[comptador].posicion = td.text
                         llistajugadors[comptador].posicion = llistajugadors[comptador].posicion.strip()
                         comptador += 1
-                    else:
-                        llistajugadors[comptador].posicion = "indeterminado"
+
     #nacimento
     cont = 0
     comptador = 0
@@ -101,11 +118,13 @@ def carregarXML():
                         valor = td.text
                         valor = valor.strip()
                         if len(valor) > 0:
-                            td.text = td.text.replace(',','')
-                            td.text = td.text.replace('m','')
-                            llistajugadors[comptador].altura = td.text
-                            llistajugadors[comptador].altura = llistajugadors[comptador].altura
-                            comptador += 1
+                                td.text = td.text.replace(',','')
+                                td.text = td.text.replace('m','')
+                                if td.text == "-":
+                                    td.text = 0
+                                llistajugadors[comptador].altura = td.text
+                                llistajugadors[comptador].altura = llistajugadors[comptador].altura
+                                comptador += 1
                 cont += 1
 
     #valorMercado
@@ -127,36 +146,40 @@ def carregarXML():
 
 
     for j in llistajugadors:
-        j.idEquipo = 1
+
+        try:
+            conn = mariadb.connect(
+                user="pythonMaster",
+                password="Admin1234",
+                host="localhost",
+                port=3306,
+                database="proves"
+            )
+        except mariadb.Error as e:
+            print(f"Error conectando a la base de datos: {e}")
+            sys.exit(1)
+
+        sentenciaSQL = f"""INSERT INTO jugadores
+        (nombre, posicion,nacimiento,numero,altura,valorMercado,equipos_id)
+        VALUES
+        ('{j.nombre}','{j.posicion}','{j.nacimiento}',{j.numero},{j.altura},{j.valorMercado},{idEquipo});
+        """
+        cur = conn.cursor()
+        cur.execute(sentenciaSQL)
+        conn.commit()
+        conn.close()
+
         print(j.posicion)
         print(j.numero + ". " + j.nombre)
         print(j.nacimiento)
         print("Alçada en cm: " + str(j.altura))
         print("Valor de mercat: " + str(j.valorMercado) + "mil €")
-        print("ID del equip: " + str(j.idEquipo))
+        print("ID del equip: " + str(idEquipo))
         print()
 
-        # try:
-        #     conn = mariadb.connect(
-        #         user="pythonMaster",
-        #         password="Admin1234",
-        #         host="localhost",
-        #         port=3306,
-        #         database="proves"
-        #     )
-        # except mariadb.Error as e:
-        #     print(f"Error conectando a la base de datos: {e}")
-        #     sys.exit(1)
-        #
-        # sentenciaSQL = f"""UPDATE jugadores SET nombre = '{j.nombre}', posicion = '{j.posicion}', nacimiento = '{j.nacimiento}', numero = {j.numero}, altura = {j.altura}, valorMercado = {j.valorMercado}, equipos_id = {idEquipo} WHERE idjugador = {idJugador}
-        # """
-        # cur = conn.cursor()
-        # cur.execute(sentenciaSQL)
-        # conn.commit()
-        # conn.close()
-
-
-# descarregaWeb()
-# llegirFitxer()
-carregarXML()
-
+def importarJugadors():
+    idEquipo = input("Posa la ID del equip que vols importar els jugadors: ")
+    urlEquipo = input("Posa la URL on es troba la informació del equip que vols importar: ")
+    descarregaWeb(urlEquipo)
+    llegirFitxer()
+    carregarXML(idEquipo)
