@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Llistat equips</title>
+</head>
+<body>
+    <h1>Equips disponibles:</h1>
+    <form method="post" action="/">
+        {% for e in equips -%}
+         <table>
+            <tr>
+                <th><input type="submit" value="{{ e.get('idEqupo')}}" name="mostrarEquip"/></th>
+                <td>{{ e.get("nombreEquipo")}}</td>
+            </tr>
+        {% endfor -%}
+        </table>
+    </form>
+</body>
+</html>

@@ -62,7 +62,10 @@ def carregarXML(idEquipo):
             for div in td.iter('div'):
                 j1 = jugadors()
                 j1.numero = div.text
+                if j1.numero == "-":
+                    j1.numero = 0
                 llistajugadors.append(j1)
+
     # Noms:
     comptador = 0
     for tbody in root.iter('tbody'):

@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 
 import mariadb
 
-
+# ESTA JA NO ÉS FA SERVIR JA QUE ARA ES TROBAR DINS DEL PROGRAMA GENERAL
 class jugadors:
     idJugador = 0
     nombre = ""

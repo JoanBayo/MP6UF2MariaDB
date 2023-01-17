@@ -98,7 +98,7 @@ def modificarJugador():
             database="proves"
         )
     except mariadb.Error as e:
-        print(f"Error conectando a la base de datos: {e}")
+        print("Error conectando a la base de datos: {e}")
         sys.exit(1)
     idJugador = input("Posa la ID del jugador que vols modificar: ")
     nombreJugador = input("Posa el nom del nou jugador: ")
@@ -182,7 +182,7 @@ def llistarJugadors():
         print(f"Error conectando a la base de datos: {e}")
         sys.exit(1)
 
-    sentenciaSQL = f"""SELECT idJugador,nombre,posicion FROM jugadores
+    sentenciaSQL = f"""SELECT jugadores.idJugador,jugadores.nombre,jugadores.posicion,equipos.nombre FROM jugadores INNER JOIN equipos ON jugadores.equipos_id = equipos.idequipo
     """
     cur = conn.cursor()
     cur.execute(sentenciaSQL)
@@ -219,7 +219,7 @@ def treballarJugadors():
         print("2- Introduir un nou jugador ")
         print("3- Modificar un jugador ")
         print("4- Eliminar un jugador")
-        print("5- Llistar tots els jugador (ID, NOM, POSCICIO)")
+        print("5- Llistar tots els jugador (ID, NOM, POSCICIO, EQUIP)")
         print("6- Sortir")
         resposta = int(input("Introdueix una opció: "))
 
